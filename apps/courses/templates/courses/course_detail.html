@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ course.title }} | LMS</title>
+</head>
+<body>
+
+    <a href="{% url 'course_list' %}">← Back to Courses</a>
+
+    <h1>{{ course.title }}</h1>
+
+    <p>{{ course.description }}</p>
+
+    <p>
+        Instructor: {{ course.instructor.username }}
+    </p>
+
+    <p>Price: ₹{{ course.price }}</p>
+
+    {% if user.is_authenticated and user.role == "STUDENT" %}
+    <form method="POST" action="{% url 'enroll_course' course.id %}">
+        {% csrf_token %}
+        <button type="submit">Enroll Now</button>
+    </form>
+{% elif not user.is_authenticated %}
+    <p>Please <a href="{% url 'login' %}">login</a> as a student to enroll.</p>
+{% endif %}
+
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+    <p>Status: {{ course.get_status_display }}</p>
+
+
+    <hr>
+
+<h2>Course Curriculum</h2>
+
+{% for module in course.modules.all %}
+    <div>
+        <h3>{{ forloop.counter }}. {{ module.title }}</h3>
+
+        {% for lesson in module.lessons.all %}
+            <p>
+                {{ forloop.counter }}.
+                  <a href="{% url 'lesson_detail' lesson.id %}">
+                 {{ lesson.title }}
+                   </a>
+            </p>
+        {% empty %}
+            <p>No lessons added yet.</p>
+        {% endfor %}
+    </div>
+
+    <hr>
+{% empty %}
+    <p>Course curriculum is coming soon.</p>
+{% endfor %}
+
+</body>
+</html>

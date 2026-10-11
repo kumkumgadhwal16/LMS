@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LMS Registration</title>
+</head>
+<body>
+
+    <h2>Create LMS Account</h2>
+
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Username</label><br>
+        <input type="text" name="username" required>
+        <br><br>
+
+        <label>Email</label><br>
+        <input type="email" name="email" required>
+        <br><br>
+
+        <label>Password</label><br>
+        <input type="password" name="password" required minlength="8">
+        <br><br>
+
+        <label>Confirm Password</label><br>
+        <input type="password" name="confirm_password" required>
+        <br><br>
+
+        <label>Select Role</label><br>
+        <select name="role" required>
+            <option value="STUDENT">Student</option>
+            <option value="INSTRUCTOR">Instructor</option>
+        </select>
+        <br><br>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <p>Already registered? <a href="{% url 'login' %}">Login</a></p>
+
+</body>
+</html>
