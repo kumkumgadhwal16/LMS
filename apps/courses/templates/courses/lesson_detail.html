@@ -1,75 +1,3 @@
-{% comment %} 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>{{ lesson.title }} | LMS</title>
-</head>
-<body>
-
-    <h1>{{ lesson.title }}</h1>
-
-    <p>
-        <strong>Course:</strong>
-        {{ lesson.module.course.title }}
-    </p>
-
-    <p>
-        <strong>Module:</strong>
-        {{ lesson.module.title }}
-    </p>
-
-    <hr>
-
-    <h2>Lesson Content</h2>
-
-    {% if lesson.content %}
-        <div>{{ lesson.content|linebreaks }}</div>
-    {% else %}
-        <p>Lesson content coming soon.</p>
-    {% endif %}
-
-    {% if lesson.video_url %}
-        <h2>Lesson Video</h2>
-
-        <a href="{{ lesson.video_url }}"
-           target="_blank"
-           rel="noopener noreferrer">
-            Watch Lesson Video
-        </a>
-    {% endif %}
-
-
-    <hr>
-
-<h2>Lesson Progress</h2>
-
-<form method="POST"
-      action="{% url 'mark_lesson_complete' lesson.id %}">
-    {% csrf_token %}
-
-    <button type="submit">
-        Mark as Complete
-    </button>
-</form>
-
-{% for message in messages %}
-    <p>{{ message }}</p>
-{% endfor %}
-
-<hr>
-
-    <hr>
-
-    <a href="{% url 'course_detail' lesson.module.course.id %}">
-        Back to Course
-    </a>
-
-</body>
-</html> {% endcomment %}
-
 
 {% extends "base.html" %}
 
@@ -77,14 +5,19 @@
 
 {% block content %}
 <div class="card">
-    <a href="/courses/">← Back to Courses</a>
+    <a href="{% url 'course_detail' lesson.module.course.id %}">
+        &larr; Back to Course
+    </a>
 
     <h1>{{ lesson.title }}</h1>
 
     <hr>
 
     <h3>Lesson Content</h3>
-    <p>{{ lesson.content|default:"Lesson content will be available soon."|linebreaks }}</p>
+
+    <div>
+        {{ lesson.content|default:"Lesson content will be available soon."|linebreaks }}
+    </div>
 
     {% if lesson.video_url %}
         <h3>Lesson Video</h3>
@@ -96,7 +29,7 @@
     <hr>
 
     {% if progress.is_completed %}
-        <p>✅ You have completed this lesson!</p>
+        <p>✅ Lesson completed!</p>
     {% else %}
         <form method="POST">
             {% csrf_token %}
