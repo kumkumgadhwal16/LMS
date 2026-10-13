@@ -166,3 +166,79 @@ def mark_lesson_complete(request, lesson_id):
     messages.success(request, "Lesson marked as completed!")
 
     return redirect("lesson_detail", lesson_id=lesson.id)
+
+
+
+@login_required
+def create_course(request):
+    # Only instructors can create courses
+    if request.user.role != "INSTRUCTOR":
+        messages.error(request, "Only instructors can create courses.")
+        return redirect("course_list")
+
+    if request.method == "POST":
+        title = request.POST.get("title", "").strip()
+        description = request.POST.get("description", "").strip()
+        price = request.POST.get("price", "0").strip()
+
+        if title and description and price:
+            try:
+                price = float(price)
+
+                if price < 0:
+                    raise ValueError
+
+                Course.objects.create(
+                    title=title,
+                    description=description,
+                    price=price,
+                    instructor=request.user,
+                    status=Course.Status.DRAFT
+                )
+
+                messages.success(
+                    request,
+                    "Course created successfully!"
+                )
+                return redirect("course_list")
+
+            except (ValueError, TypeError):
+                messages.error(request, "Please enter a valid price.")
+        else:
+            messages.error(
+                request,
+                "Please fill in all required fields."
+            )
+
+    return render(request, "courses/create_course.html")
+
+
+
+
+@login_required
+def publish_course(request, course_id):
+    if request.user.role != "INSTRUCTOR":
+        messages.error(
+            request,
+            "Only instructors can publish courses."
+        )
+        return redirect("course_list")
+
+    if request.method != "POST":
+        return redirect("course_list")
+
+    course = get_object_or_404(
+        Course,
+        id=course_id,
+        instructor=request.user
+    )
+
+    course.status = Course.Status.PUBLISHED
+    course.save(update_fields=["status"])
+
+    messages.success(
+        request,
+        "Course published successfully!"
+    )
+
+    return redirect("course_list")
