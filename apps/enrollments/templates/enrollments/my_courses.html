@@ -1,70 +1,82 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Courses | LMS</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <h1>My Enrolled Courses</h1>
+{% block title %}My Courses | LearnHub{% endblock %}
 
-    <p>Welcome, {{ user.username }}!</p>
+{% block content %}
+
+<div class="student-welcome">
+    <div>
+        <p class="dashboard-label">MY LEARNING</p>
+        <h1>My Courses 📚</h1>
+        <p>Continue your learning journey and track your progress.</p>
+    </div>
+
+    <a href="{% url 'course_list' %}" class="dashboard-button">
+        Explore Courses →
+    </a>
+</div>
+
+<div class="dashboard-grid">
 
     {% for enrollment in enrollments %}
-        <div>
-            <h2>{{ enrollment.course.title }}</h2>
+        <div class="dashboard-card">
 
-            <p>{{ enrollment.course.description }}</p>
+            <div class="dashboard-icon">🎓</div>
 
-            <p>
-                Instructor:
-                {{ enrollment.course.instructor.username }}
-            </p>
-
-            <hr>
-
-            <h3>Course Progress</h3>
+            <h3>{{ enrollment.course.title }}</h3>
 
             <p>
-                Progress: {{ enrollment.progress_percentage }}%
+                {{ enrollment.course.description|truncatewords:18 }}
             </p>
 
-            <p>
-                Completed Lessons:
-                {{ enrollment.completed_lessons }}
-                /
-                {{ enrollment.total_lessons }}
-            </p>
+            <div class="progress-info">
+                <span>Course Progress</span>
+                <strong>{{ enrollment.progress_percentage }}%</strong>
+            </div>
 
-            <progress
-                value="{{ enrollment.progress_percentage }}"
-                max="100">
-            </progress>
+            <div class="progress-track">
+                <div
+                    class="progress-fill"
+                    style="width: {{ enrollment.progress_percentage }}%;">
+                </div>
+            </div>
+
+            <p class="lesson-count">
+                {{ enrollment.completed_lessons }} of
+                {{ enrollment.total_lessons }} lessons completed
+            </p>
 
             {% if enrollment.is_course_completed %}
-                <p>Course Status: Completed</p>
+                <span class="course-status completed">
+                    ✓ Completed
+                </span>
             {% else %}
-                <p>Course Status: In Progress</p>
+                <span class="course-status in-progress">
+                    In Progress
+                </span>
             {% endif %}
 
-            <br><br>
+            <div class="course-action">
+                <a href="{% url 'course_detail' enrollment.course.id %}">
+                    Open Course →
+                </a>
+            </div>
 
-            <a href="{% url 'course_detail' enrollment.course.id %}">
-                View Course
-            </a>
         </div>
 
-        <hr>
-
     {% empty %}
-        <p>You have not enrolled in any courses yet.</p>
+        <div class="dashboard-card">
+            <div class="dashboard-icon">📖</div>
+            <h3>No enrolled courses yet</h3>
+            <p>Explore the available courses and start learning.</p>
 
-        <a href="{% url 'course_list' %}">
-            Explore Courses
-        </a>
+            <a href="{% url 'course_list' %}" class="dashboard-button">
+                Browse Courses
+            </a>
+        </div>
     {% endfor %}
 
-</body>
-</html>
+</div>
+
+{% endblock %}

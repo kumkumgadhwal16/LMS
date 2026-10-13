@@ -1,34 +1,104 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
 
-    <h2>Login</h2>
+{% extends "base.html" %}
 
-    {% if error %}
-        <p>{{ error }}</p>
-    {% endif %}
+{% block title %}Login | LearnHub{% endblock %}
 
-    <form method="POST">
-        {% csrf_token %}
+{% block content %}
+<div class="register-page">
+    <div class="register-card">
 
-        <label>Username</label><br>
-        <input type="text" name="username" required>
-        <br><br>
+        <div class="register-info">
+            <span class="eyebrow">WELCOME BACK</span>
 
-        <label>Password</label><br>
-        <input type="password" name="password" required>
-        <br><br>
+            <h1>Continue Your Learning Journey</h1>
 
-        <button type="submit">Login</button>
-    </form>
+            <p>
+                Login to access your courses, track your progress,
+                and continue learning new skills.
+            </p>
 
-    <p>
-        Don't have an account?
-        <a href="{% url 'register' %}">Register</a>
-    </p>
+            <div class="feature">
+                <span>📚</span>
+                <div>
+                    <h3>Your Courses</h3>
+                    <p>Access your enrolled courses in one place.</p>
+                </div>
+            </div>
 
-</body>
-</html>
+            <div class="feature">
+                <span>🎯</span>
+                <div>
+                    <h3>Track Progress</h3>
+                    <p>Keep moving towards your learning goals.</p>
+                </div>
+            </div>
+
+            <div class="feature">
+                <span>🚀</span>
+                <div>
+                    <h3>Keep Growing</h3>
+                    <p>Learn something new every day.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="register-form-section">
+            <div class="form-heading">
+                <span class="form-icon">✦</span>
+                <h2>Login to LearnHub</h2>
+                <p>Enter your account details below.</p>
+            </div>
+
+            {% if error %}
+                <div class="register-message">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            {% for message in messages %}
+                <div class="register-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="register-button">
+                    Login →
+                </button>
+            </form>
+
+            <p class="login-text">
+                Don't have an account?
+                <a href="{% url 'register' %}">Create Account</a>
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

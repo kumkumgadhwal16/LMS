@@ -1,35 +1,53 @@
 
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Student Dashboard | LMS</title>
-</head>
-<body>
+{% block title %}Student Dashboard | LearnHub{% endblock %}
 
-    <h1>Student Dashboard</h1>
+{% block content %}
 
-    <p>Welcome, {{ user.username }}!</p>
+<div class="student-welcome">
+    <div>
+        <p class="dashboard-label">STUDENT PORTAL</p>
+        <h1>Welcome back, {{ request.user.username }}! 👋</h1>
+        <p>Continue learning and make progress towards your goals.</p>
+    </div>
 
-    <p>Here you can view your enrolled courses.</p>
+    <a href="{% url 'course_list' %}" class="dashboard-button">
+        Explore Courses →
+    </a>
+</div>
 
-    <hr>
+<div class="dashboard-grid">
 
-    <h2>My Learning</h2>
+    <div class="dashboard-card">
+        <div class="dashboard-icon">📚</div>
+        <h3>My Learning</h3>
+        <p>Access the courses you have enrolled in.</p>
+        <a href="{% url 'my_courses' %}">View My Courses →</a>
+    </div>
 
-    <a href="{% url 'my_courses' %}">My Courses</a>
+    <div class="dashboard-card">
+        <div class="dashboard-icon">🎯</div>
+        <h3>Learning Goals</h3>
+        <p>Keep learning regularly and complete your lessons.</p>
+        <a href="{% url 'course_list' %}">Find a Course →</a>
+    </div>
 
-    <br><br>
+    <div class="dashboard-card">
+        <div class="dashboard-icon">🚀</div>
+        <h3>Discover Skills</h3>
+        <p>Explore new topics and build your knowledge.</p>
+        <a href="{% url 'course_list' %}">Explore Now →</a>
+    </div>
 
-    <a href="{% url 'course_list' %}">Explore Courses</a>
+</div>
 
-    <br><br>
+<div class="dashboard-bottom">
+    <h2>Ready to Learn Something New?</h2>
+    <p>Choose a course and take the next step in your learning journey.</p>
+    <a href="{% url 'course_list' %}" class="dashboard-button">
+        Browse All Courses
+    </a>
+</div>
 
-    <a href="{% url 'logout' %}">Logout</a>
-
-</body>
-</html>
-
-
-
+{% endblock %}

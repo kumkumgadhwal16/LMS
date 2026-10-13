@@ -1,4 +1,4 @@
-```html
+{% comment %} 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,5 +68,40 @@
     </a>
 
 </body>
-</html>
-```
+</html> {% endcomment %}
+
+
+{% extends "base.html" %}
+
+{% block title %}{{ lesson.title }} | LearnHub{% endblock %}
+
+{% block content %}
+<div class="card">
+    <a href="/courses/">← Back to Courses</a>
+
+    <h1>{{ lesson.title }}</h1>
+
+    <hr>
+
+    <h3>Lesson Content</h3>
+    <p>{{ lesson.content|default:"Lesson content will be available soon."|linebreaks }}</p>
+
+    {% if lesson.video_url %}
+        <h3>Lesson Video</h3>
+        <a href="{{ lesson.video_url }}" target="_blank" rel="noopener noreferrer">
+            Watch Video
+        </a>
+    {% endif %}
+
+    <hr>
+
+    {% if progress.is_completed %}
+        <p>✅ You have completed this lesson!</p>
+    {% else %}
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit">Mark as Complete</button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}

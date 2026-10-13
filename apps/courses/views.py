@@ -63,38 +63,62 @@ def enroll_course(request, id):
 
 
 
-
-
 @login_required
 def lesson_detail(request, lesson_id):
-    lesson = get_object_or_404(
-        Lesson,
-        id=lesson_id,
-        module__course__status=Course.Status.PUBLISHED
+    lesson = get_object_or_404(Lesson, id=lesson_id)
+
+    progress, created = LessonProgress.objects.get_or_create(
+        student=request.user,
+        lesson=lesson
     )
 
-    # Check student enrollment
-    if request.user.role == "STUDENT":
-        is_enrolled = Enrollment.objects.filter(
-            student=request.user,
-            course=lesson.module.course
-        ).exists()
+    if request.method == "POST":
+        progress.is_completed = True
+        progress.save()
 
-        if not is_enrolled:
-            messages.error(
-                request,
-                "Please enroll in this course to access lessons."
-            )
-            return redirect(
-                "course_detail",
-                id=lesson.module.course.id
-            )
+        messages.success(request, "Lesson completed successfully!")
+        return redirect("lesson_detail", lesson_id=lesson.id)
 
     return render(
         request,
         "courses/lesson_detail.html",
-        {"lesson": lesson}
+        {
+            "lesson": lesson,
+            "progress": progress,
+        }
     )
+
+
+# @login_required
+# def lesson_detail(request, lesson_id):
+#     lesson = get_object_or_404(
+#         Lesson,
+#         id=lesson_id,
+#         module__course__status=Course.Status.PUBLISHED
+#     )
+
+#     # Check student enrollment
+#     if request.user.role == "STUDENT":
+#         is_enrolled = Enrollment.objects.filter(
+#             student=request.user,
+#             course=lesson.module.course
+#         ).exists()
+
+#         if not is_enrolled:
+#             messages.error(
+#                 request,
+#                 "Please enroll in this course to access lessons."
+#             )
+#             return redirect(
+#                 "course_detail",
+#                 id=lesson.module.course.id
+#             )
+
+#     return render(
+#         request,
+#         "courses/lesson_detail.html",
+#         {"lesson": lesson}
+#     )
 
 
 
