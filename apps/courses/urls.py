@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import course_list,course_detail,enroll_course,lesson_detail
-from .views import mark_lesson_complete,create_course,publish_course,instructor_dashboard
+from .views import mark_lesson_complete,create_course,publish_course,instructor_dashboard, update_course, delete_course
 
 
 urlpatterns = [
@@ -29,6 +29,17 @@ urlpatterns = [
     "instructor/",
     instructor_dashboard,
     name="instructor_dashboard"
+),
+
+  path(
+    "<int:course_id>/edit/",
+    update_course,
+    name="update_course"
+),
+path(
+    "<int:course_id>/delete/",
+    delete_course,
+    name="delete_course"
 ),
   
    

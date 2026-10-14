@@ -6,6 +6,7 @@ from apps.enrollments.models import Enrollment
 from .models import Course, Lesson,LessonProgress
 from django.utils import timezone
 
+from .forms import CourseForm
 
 
 
@@ -259,4 +260,60 @@ def instructor_dashboard(request):
         request,
         "courses/instructor_dashboard.html",
         {"courses": courses}
+    )
+
+
+
+
+
+@login_required
+def update_course(request, course_id):
+    if request.user.role != "INSTRUCTOR":
+        messages.error(request, "Only instructors can update courses.")
+        return redirect("course_list")
+
+    course = get_object_or_404(
+        Course,
+        id=course_id,
+        instructor=request.user
+    )
+
+    if request.method == "POST":
+        form = CourseForm(request.POST, instance=course)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Course updated successfully!")
+            return redirect("instructor_dashboard")
+    else:
+        form = CourseForm(instance=course)
+
+    return render(
+        request,
+        "courses/update_course.html",
+        {"form": form, "course": course}
+    )
+
+
+@login_required
+def delete_course(request, course_id):
+    if request.user.role != "INSTRUCTOR":
+        messages.error(request, "Only instructors can delete courses.")
+        return redirect("course_list")
+
+    course = get_object_or_404(
+        Course,
+        id=course_id,
+        instructor=request.user
+    )
+
+    if request.method == "POST":
+        course.delete()
+        messages.success(request, "Course deleted successfully!")
+        return redirect("instructor_dashboard")
+
+    return render(
+        request,
+        "courses/delete_course.html",
+        {"course": course}
     )

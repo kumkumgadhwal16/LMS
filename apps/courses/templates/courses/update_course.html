@@ -1,0 +1,21 @@
+
+{% extends "base.html" %}
+
+{% block title %}Update Course | LearnHub{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Update Course</h1>
+    <h3>{{ course.title }}</h3>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Save Changes</button>
+        <a href="{% url 'instructor_dashboard' %}">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

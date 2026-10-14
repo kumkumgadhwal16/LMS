@@ -4,6 +4,7 @@
 {% block title %}Instructor Dashboard | LearnHub{% endblock %}
 
 {% block content %}
+
 <div class="card">
     <h1>Instructor Dashboard</h1>
 
@@ -20,23 +21,40 @@
 {% for course in courses %}
     <div class="card">
         <h3>{{ course.title }}</h3>
+
         <p>{{ course.description }}</p>
         <p>Price: ₹{{ course.price }}</p>
         <p>Status: {{ course.get_status_display }}</p>
 
-        {% if course.status == "DRAFT" %}
-            <form
-                method="POST"
-                action="{% url 'publish_course' course.id %}"
-            >
-                {% csrf_token %}
-                <button type="submit">Publish Course</button>
-            </form>
-        {% else %}
-            <p>✓ Course Published</p>
-        {% endif %}
+        <div class="course-actions">
+
+            <a href="{% url 'update_course' course.id %}">
+                <button type="button">Edit Course</button>
+            </a>
+
+            <a href="{% url 'delete_course' course.id %}">
+                <button type="button">Delete Course</button>
+            </a>
+
+            {% if course.status == "DRAFT" %}
+                <form
+                    method="POST"
+                    action="{% url 'publish_course' course.id %}"
+                >
+                    {% csrf_token %}
+                    <button type="submit">Publish Course</button>
+                </form>
+            {% else %}
+                <p>✓ Course Published</p>
+            {% endif %}
+
+        </div>
     </div>
+
 {% empty %}
-    <p>You haven't created any courses yet.</p>
+    <div class="card">
+        <p>You haven't created any courses yet.</p>
+    </div>
 {% endfor %}
+
 {% endblock %}
