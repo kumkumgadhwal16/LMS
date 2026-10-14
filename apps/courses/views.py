@@ -7,17 +7,33 @@ from .models import Course, Lesson,LessonProgress
 from django.utils import timezone
 
 from .forms import CourseForm
+from django.db.models import Q
 
 
 
 def course_list(request):
-    courses = Course.objects.filter(status=Course.Status.PUBLISHED)
+    query = request.GET.get("q", "").strip()
+
+    courses = Course.objects.filter(
+        status=Course.Status.PUBLISHED
+    )
+
+    if query:
+        courses = courses.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query)
+        )
 
     return render(
         request,
         "courses/course_list.html",
-        {"courses": courses}
+        {
+            "courses": courses,
+            "query": query,
+        }
     )
+
+
 
 
 def course_detail(request, id):
