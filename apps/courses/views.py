@@ -242,3 +242,21 @@ def publish_course(request, course_id):
     )
 
     return redirect("course_list")
+
+
+
+@login_required
+def instructor_dashboard(request):
+    if request.user.role != "INSTRUCTOR":
+        messages.error(request, "Only instructors can access this page.")
+        return redirect("course_list")
+
+    courses = Course.objects.filter(
+        instructor=request.user
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "courses/instructor_dashboard.html",
+        {"courses": courses}
+    )

@@ -1,0 +1,42 @@
+
+{% extends "base.html" %}
+
+{% block title %}Instructor Dashboard | LearnHub{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Instructor Dashboard</h1>
+
+    <p>Welcome, {{ request.user.username }}!</p>
+    <p>Here you can manage your courses.</p>
+
+    <a href="{% url 'create_course' %}">
+        <button type="button">+ Create New Course</button>
+    </a>
+</div>
+
+<h2>My Courses</h2>
+
+{% for course in courses %}
+    <div class="card">
+        <h3>{{ course.title }}</h3>
+        <p>{{ course.description }}</p>
+        <p>Price: ₹{{ course.price }}</p>
+        <p>Status: {{ course.get_status_display }}</p>
+
+        {% if course.status == "DRAFT" %}
+            <form
+                method="POST"
+                action="{% url 'publish_course' course.id %}"
+            >
+                {% csrf_token %}
+                <button type="submit">Publish Course</button>
+            </form>
+        {% else %}
+            <p>✓ Course Published</p>
+        {% endif %}
+    </div>
+{% empty %}
+    <p>You haven't created any courses yet.</p>
+{% endfor %}
+{% endblock %}
